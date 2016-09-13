@@ -3,12 +3,17 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  Image,
   View,
   TextInput,
   TouchableHighlight,
-  ActivityIndicator
+  ActivityIndicator,
+  Dimensions,
+  ListView
 } from 'react-native';
+
+var AddActivity = require('./AddActivity');
+var CalendarPicker = require('react-native-calendar-picker'),
+    CalendarPicker2;
 
 var styles = StyleSheet.create({
   description: {
@@ -18,18 +23,18 @@ var styles = StyleSheet.create({
     color: '#656565'
   },
   container: {
-    padding: 30,
-    marginTop: 65,
+    marginTop: 30,
     alignItems: 'center'
   },
-  flowRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'stretch'
+  selectedDate: {
+    marginTop: 10,
+    backgroundColor: 'rgba(0,0,0,0)',
+    color: '#000'
   },
   buttonText: {
+    marginTop: 1,
     fontSize: 18,
-    color: 'white',
+    color: 'black',
     alignSelf: 'center'
   },
   button: {
@@ -44,33 +49,70 @@ var styles = StyleSheet.create({
     alignSelf: 'stretch',
     justifyContent: 'center'
   },
-  searchInput: {
-    height: 36,
-    padding: 4,
-    marginRight: 5,
-    flex: 4,
-    fontSize: 18,
-    borderWidth: 1,
-    borderColor: '#48BBEC',
-    borderRadius: 2,
-    color: '#48BBEC'
-  },
-  image: {
-    width: 217,
-    height: 138
+  popup: {
+    paddingTop: 10,
+    backgroundColor: '#f0f0f0',
+    height: 200
   }
 });
 
 class CalendarPage extends Component {
+  constructor(props) {
+    super(props);
+    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    this.state = {
+      current_date: new Date(),
+      date: new Date(),
+      dataSource: ds.cloneWithRows(['row 1', 'row 2', 'row 3', 'row 4'])
+    };
+  }
+
+  onDateChange(date) {
+    this.setState({ date: date });
+  }
+
+  renderRow(rowData, sectionID, rowID) {
+    return (
+      <View>
+        <Text style={styles.buttonText}>List activities</Text>
+      </View>
+    );
+  }
+
+  addActivity() {
+    this.props.navigator.push({
+      title: 'Add activity',
+      component: AddActivity,
+      passProps: { date: this.state.date }
+    });
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.description}>
-          Search for houses to buy!
-        </Text>
-        <Text style={styles.description}>
-          Search by place-name, postcode or search near your location.
-        </Text>
+      <View>
+        <View style={styles.container}>
+          <Text style={styles.description}>
+            Select the day to set or view the training
+          </Text>
+          <Text style={styles.selectedDate}> Selected date: { this.state.date.toString() } </Text>
+          <CalendarPicker
+            selectedDate={this.state.date}
+            onDateChange={this.onDateChange.bind(this)}
+            screenWidth={Dimensions.get('window').width}
+            startFromMonday={true}
+            weekdays={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']}
+            selectedBackgroundColor={'#5ce600'} />
+        </View>
+        <TouchableHighlight style={styles.button} onPress={this.addActivity.bind(this)}
+            underlayColor='#99d9f4'>
+          <Text style={styles.buttonText}>Add activity for selected day</Text>
+        </TouchableHighlight>
+        <View style={styles.popup}>
+          <Text style={styles.buttonText}>Activities for selected day</Text>
+          <ListView
+            dataSource={this.state.dataSource}
+            renderRow={this.renderRow.bind(this)}/>
+        </View>
       </View>
     );
   }
