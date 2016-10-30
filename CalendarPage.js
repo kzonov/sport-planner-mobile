@@ -8,7 +8,8 @@ import {
   TouchableHighlight,
   ActivityIndicator,
   Dimensions,
-  ListView
+  ListView,
+  AsyncStorage
 } from 'react-native';
 
 var AddActivity = require('./AddActivity');
@@ -60,11 +61,19 @@ class CalendarPage extends Component {
   constructor(props) {
     super(props);
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    this.loadActivities();
     this.state = {
       current_date: new Date(),
       date: new Date(),
-      dataSource: ds.cloneWithRows(['row 1', 'row 2', 'row 3', 'row 4'])
+      dataSource: ds.cloneWithRows([])
     };
+  }
+
+  async loadActivities() {
+    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    await AsyncStorage.getItem('@ActivityStore:activities').then((result) =>  activities = JSON.parse(result));
+    console.log(activities);
+    this.setState({ dataSource: ds.cloneWithRows(activities) });
   }
 
   onDateChange(date) {
@@ -74,7 +83,7 @@ class CalendarPage extends Component {
   renderRow(rowData, sectionID, rowID) {
     return (
       <View>
-        <Text style={styles.buttonText}>List activities</Text>
+        <Text style={styles.buttonText}>{rowData.activityTitle}</Text>
       </View>
     );
   }
