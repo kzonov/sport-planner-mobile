@@ -1,0 +1,9 @@
+1. FE. Add listing of all activities on calendar page
+2. FE. Listing activities only for selected date
+3. FE. Auto return back after successful adding of activity
+4. BE. Add boilerplate app
+5. BE. Implement JSON api for activities
+6. FE. Use real API for storing and retrieving activities
+7. FE. Implement activities page for selected day
+8. FE. Implement marker is it any activity in day or not
+9. FE. Implement gesture to mark activity passed

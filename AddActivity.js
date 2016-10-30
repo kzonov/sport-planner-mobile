@@ -80,14 +80,14 @@ class AddActivity extends Component {
     }
 
     try {
-      await AsyncStorage.getItem('@ActivityStore:activities').then((result) =>  activities = result)
-      console.log('old data: ' + activities);
+      await AsyncStorage.getItem('@ActivityStore:activities').then((result) =>  activities = JSON.parse(result));
+
+      // On first run there will be no array so we need to arrayify this
       if(Array.isArray(activities) == false) {
         activities = [activities];
       }
-      console.log('old data: ' + activities);
+
       activities.push(activityData)
-      console.log('new_data: ' + activities);
       await AsyncStorage.setItem('@ActivityStore:activities', JSON.stringify(activities));
       await AsyncStorage.getItem('@ActivityStore:activities', (err, result) => {
         console.log('new data: ' + result);
