@@ -80,23 +80,20 @@ class AddActivity extends Component {
     }
 
     try {
-
-      AsyncStorage.setItem('UID123', JSON.stringify([{a: 1}]), () => {
-        AsyncStorage.mergeItem('UID123', JSON.stringify([activityData]), () => {
-          AsyncStorage.getItem('UID123', (err, result) => {
-            console.log(result);
-          });
-        });
+      await AsyncStorage.getItem('@ActivityStore:activities').then((result) =>  activities = result)
+      console.log('old data: ' + activities);
+      if(Array.isArray(activities) == false) {
+        activities = [activities];
+      }
+      console.log('old data: ' + activities);
+      activities.push(activityData)
+      console.log('new_data: ' + activities);
+      await AsyncStorage.setItem('@ActivityStore:activities', JSON.stringify(activities));
+      await AsyncStorage.getItem('@ActivityStore:activities', (err, result) => {
+        console.log('new data: ' + result);
       });
-
-      // var activities = await AsyncStorage.getItem('@ActivityStore:activities');
-      // console.log('old data: ' + activities);
-      // var array = await AsyncStorage.mergeItem('@ActivityStore:activities', JSON.stringify(activityData));
-      // console.log('new data: ' + array);
-      // await AsyncStorage.getItem('@ActivityStore:activities', (err, result) => {
-      // });
     } catch (error) {
-      console.error(error);
+      console.error('Error on ' + this.prototype + ': ' + error);
     }
   }
 
@@ -111,8 +108,7 @@ class AddActivity extends Component {
       await this.createActivity();
       await this.getAndUseVariables();
     } catch (error) {
-      // console.error('failed to save the data :(')
-      console.error(error);
+      console.error('Error on ' + this.prototype + ': ' + error);
     }
   }
 
