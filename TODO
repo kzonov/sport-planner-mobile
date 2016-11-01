@@ -1,6 +1,6 @@
 FE. Add Readme
-FE. Listing activities only for selected date
 FE. Auto return back after successful adding of activity
+FE. Rerender selectedDateActivities after creating new one
 BE. Add boilerplate app
 BE. Implement JSON api for activities
 FE. Use real API for storing and retrieving activities

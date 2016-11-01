@@ -69,15 +69,24 @@ class CalendarPage extends Component {
     };
   }
 
-  async loadActivities() {
+  async loadActivities(selectedDate = new Date()) {
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     await AsyncStorage.getItem('@ActivityStore:activities').then((result) =>  activities = JSON.parse(result));
-    console.log(activities);
-    this.setState({ dataSource: ds.cloneWithRows(activities) });
+    this.setState({ dataSource: ds.cloneWithRows(this.filteredActivities(activities)) });
   }
 
   onDateChange(date) {
     this.setState({ date: date });
+    this.loadActivities();
+  }
+
+  selectedDateActivities(activity) {
+    activityDate = new Date(activity.date)
+    return activityDate.toDateString() == this.state.date.toDateString();
+  }
+
+  filteredActivities(activities) {
+    return filtered = activities.filter(this.selectedDateActivities, this);
   }
 
   renderRow(rowData, sectionID, rowID) {
